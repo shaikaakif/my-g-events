@@ -6,6 +6,8 @@ import {
   Ticket,
   TicketUpdate,
   ChallengeContent,
+  EventGalleryItem,
+  EventFeedback,
 } from '../../types';
 
 export interface TicketFilterOptions {
@@ -48,6 +50,14 @@ export interface IEventRepository {
   createTicket(ticket: Omit<Ticket, 'id' | 'created_at' | 'updated_at'>): Promise<Ticket>;
   updateTicket(id: string, updates: Partial<Ticket>, updatedBy: string, updateNote?: string): Promise<Ticket>;
   getTicketUpdates(ticketId: string): Promise<TicketUpdate[]>;
+
+  // Gallery
+  getGalleryItems(eventId?: string): Promise<EventGalleryItem[]>;
+  addGalleryItem(item: Omit<EventGalleryItem, 'id' | 'created_at'>): Promise<EventGalleryItem>;
+
+  // Event Feedback
+  getEventFeedbacks(eventId: string): Promise<EventFeedback[]>;
+  addEventFeedback(feedback: Omit<EventFeedback, 'id' | 'created_at'>): Promise<EventFeedback>;
 
   // Local demo control
   resetDemoData?(): void;

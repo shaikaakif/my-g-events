@@ -1,11 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="g-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#10B981" />
-      <stop offset="100%" stop-color="#047857" />
+    <linearGradient id="g-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="45%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#064e3b" />
     </linearGradient>
+    <linearGradient id="g-highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="mint-bar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a7f3d0" />
+      <stop offset="100%" stop-color="#6ee7b7" />
+    </linearGradient>
+    <filter id="g-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#064e3b" flood-opacity="0.35" />
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="128" fill="url(#g-grad)" />
-  <!-- G-Events Zap & Calendar Emblem -->
-  <path d="M280 90 L160 270 L250 270 L230 422 L350 240 L260 240 Z" fill="#FFFFFF" stroke="#D1FAE5" stroke-width="12" stroke-linejoin="round" />
+
+  <!-- Squircle rounded background with emerald gradient -->
+  <rect x="24" y="24" width="464" height="464" rx="128" fill="url(#g-bg)" filter="url(#g-shadow)" />
+  <rect x="24" y="24" width="464" height="464" rx="128" fill="url(#g-highlight)" />
+  <rect x="24" y="24" width="464" height="464" rx="128" fill="none" stroke="#6ee7b7" stroke-width="6" stroke-opacity="0.4" />
+
+  <!-- Bespoke Stylized Geometric G Monogram -->
+  <!-- Outer smooth circular loop -->
+  <path
+    d="M416 256 C416 344.37 344.37 416 256 416 C167.63 416 96 344.37 96 256 C96 167.63 167.63 96 256 96 C309.59 96 356.84 122.35 385.65 162.7"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="51.2"
+    stroke-linecap="round"
+  />
+
+  <!-- Mint horizontal crossbar -->
+  <path
+    d="M256 256 H408"
+    fill="none"
+    stroke="url(#mint-bar)"
+    stroke-width="51.2"
+    stroke-linecap="round"
+  />
+
+  <!-- Mint energy facet diamond -->
+  <rect
+    x="224"
+    y="120"
+    width="56"
+    height="56"
+    rx="12"
+    transform="rotate(45 224 120)"
+    fill="url(#mint-bar)"
+  />
 </svg>

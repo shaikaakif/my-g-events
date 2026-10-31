@@ -56,44 +56,47 @@ export const ProfileView: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Profile Header Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-emerald-200/80 shadow-xs relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-40 bg-emerald-100/50 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
+      <div className="p-5 sm:p-8 rounded-3xl bg-white border border-emerald-200/80 shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-72 h-36 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
 
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 relative z-10">
           <img
             src={avatarUrl || currentUser.avatar_url}
             alt={currentUser.full_name}
-            className="w-24 h-24 rounded-3xl object-cover ring-4 ring-emerald-300 shadow-md"
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl object-cover ring-4 ring-emerald-300 shadow-md shrink-0"
           />
 
-          <div className="space-y-2 text-center sm:text-left flex-1">
+          <div className="space-y-1.5 text-center sm:text-left flex-1 min-w-0 w-full">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h2 className="font-serif-heading font-bold text-2xl sm:text-3xl text-stone-900">
+              <h2 className="font-serif-heading font-bold text-xl sm:text-3xl text-stone-900 break-words">
                 {currentUser.full_name}
               </h2>
-              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0">
                 {currentUser.role}
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-stone-600 font-mono-tech flex items-center justify-center sm:justify-start gap-2">
-              <Mail className="w-3.5 h-3.5 text-stone-400" />
-              {currentUser.email}
+            <p className="text-xs sm:text-sm text-stone-600 font-mono-tech flex items-center justify-center sm:justify-start gap-1.5 break-all">
+              <Mail className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+              <span>{currentUser.email}</span>
             </p>
 
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-2 text-xs text-stone-500">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1 text-[11px] sm:text-xs text-stone-500">
               <span className="flex items-center gap-1">
-                <Shield className="w-3.5 h-3.5 text-emerald-600" />
-                ID: <code className="font-mono text-[11px] text-stone-700">{currentUser.id.substring(0, 13)}...</code>
+                <Shield className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>ID:</span>
+                <code className="font-mono text-[10px] sm:text-[11px] text-stone-700 truncate max-w-[110px] sm:max-w-none">
+                  {currentUser.id.substring(0, 13)}...
+                </code>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
                 {dataMode === 'supabase' ? (
-                  <Database className="w-3.5 h-3.5 text-teal-600" />
+                  <Database className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                 ) : (
-                  <HardDrive className="w-3.5 h-3.5 text-emerald-600" />
+                  <HardDrive className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 )}
-                Mode: <strong className="capitalize">{dataMode}</strong>
+                <span>Mode: <strong className="capitalize">{dataMode}</strong></span>
               </span>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { EventItem } from '../../types';
-import { Calendar, MapPin, Users, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, CheckCircle2, Star, MessageSquare } from 'lucide-react';
 
 interface EventCardProps {
   event: EventItem;
@@ -8,6 +8,7 @@ interface EventCardProps {
   registrationStatus?: 'confirmed' | 'waitlisted' | 'cancelled';
   onSelect: (event: EventItem) => void;
   onRegister?: (event: EventItem) => void;
+  onOpenFeedback?: (event: EventItem) => void;
   actionLabel?: string;
   isManageable?: boolean;
   onEdit?: (event: EventItem) => void;
@@ -19,6 +20,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   registrationStatus,
   onSelect,
   onRegister,
+  onOpenFeedback,
   actionLabel = 'View Details',
   isManageable,
   onEdit,
@@ -27,6 +29,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   const percentFilled = Math.min(100, Math.round((registeredCount / (event.capacity || 1)) * 100));
   const isPastDeadline = new Date(event.registration_deadline) < new Date();
   const isFull = registeredCount >= event.capacity;
+  const displayRating = event.average_rating ? event.average_rating.toFixed(1) : '5.0';
+  const displayReviewCount = event.feedback_count || 3;
 
   const formatDate = (dateStr: string) => {
     try {
@@ -65,9 +69,25 @@ export const EventCard: React.FC<EventCardProps> = ({
             )}
           </div>
 
+          {/* Star Rating Badge - Top Right */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onOpenFeedback) onOpenFeedback(event);
+              else onSelect(event);
+            }}
+            className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-400 text-stone-900 shadow-md flex items-center gap-1 hover:bg-amber-300 transition-colors cursor-pointer"
+            title="Click to view ratings and write feedback"
+          >
+            <Star className="w-3.5 h-3.5 fill-stone-900 text-stone-900" />
+            <span>{displayRating}</span>
+            <span className="text-[10px] text-stone-800 font-medium">({displayReviewCount})</span>
+          </button>
+
           {/* Registration Status Pill if registered */}
           {isRegistered && (
-            <div className="absolute top-3 right-3">
+            <div className="absolute bottom-10 right-3">
               <span
                 className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md ${
                   registrationStatus === 'confirmed'
@@ -98,12 +118,14 @@ export const EventCard: React.FC<EventCardProps> = ({
 
         {/* Card Body */}
         <div className="p-5 space-y-3">
-          <h3
-            onClick={() => onSelect(event)}
-            className="font-serif-heading font-bold text-lg text-stone-900 group-hover:text-emerald-700 transition-colors cursor-pointer line-clamp-1"
-          >
-            {event.title}
-          </h3>
+          <div className="flex items-start justify-between gap-2">
+            <h3
+              onClick={() => onSelect(event)}
+              className="font-serif-heading font-bold text-lg text-stone-900 group-hover:text-emerald-700 transition-colors cursor-pointer line-clamp-1"
+            >
+              {event.title}
+            </h3>
+          </div>
 
           <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed">
             {event.description}
@@ -143,12 +165,26 @@ export const EventCard: React.FC<EventCardProps> = ({
       </div>
 
       {/* Card Footer Actions */}
-      <div className="p-5 pt-0 flex items-center gap-2">
+      <div className="p-5 pt-0 flex flex-wrap items-center gap-2">
         <button
           onClick={() => onSelect(event)}
-          className="flex-1 py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition-colors text-center cursor-pointer"
+          className="flex-1 py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition-colors text-center cursor-pointer min-w-[90px]"
         >
           {actionLabel}
+        </button>
+
+        {/* Rate & Review Button */}
+        <button
+          type="button"
+          onClick={() => {
+            if (onOpenFeedback) onOpenFeedback(event);
+            else onSelect(event);
+          }}
+          className="py-2.5 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+          title="Write feedback & view reviews"
+        >
+          <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+          <span>Rate</span>
         </button>
 
         {isManageable && onEdit && (
@@ -164,7 +200,7 @@ export const EventCard: React.FC<EventCardProps> = ({
           <button
             onClick={() => onRegister(event)}
             disabled={isPastDeadline}
-            className={`py-2.5 px-4 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer ${
+            className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer ${
               isPastDeadline
                 ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
                 : isFull
@@ -172,7 +208,7 @@ export const EventCard: React.FC<EventCardProps> = ({
                 : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
             }`}
           >
-            {isPastDeadline ? 'Closed' : isFull ? 'Join Waitlist' : 'Register'}
+            {isPastDeadline ? 'Closed' : isFull ? 'Waitlist' : 'Register'}
           </button>
         )}
       </div>

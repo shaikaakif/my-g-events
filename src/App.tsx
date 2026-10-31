@@ -6,13 +6,23 @@ import { ParticipantDashboard } from './features/participant/ParticipantDashboar
 import { VolunteerDashboard } from './features/volunteer/VolunteerDashboard';
 import { CoordinatorDashboard } from './features/coordinator/CoordinatorDashboard';
 import { PrincipalDashboard } from './features/principal/PrincipalDashboard';
+import { EventGallery } from './features/gallery/EventGallery';
 
 const AppContent: React.FC = () => {
-  const { currentPath, currentUser } = useApp();
+  const { currentPath } = useApp();
 
   // Root landing & persona selection
   if (currentPath === '/' || currentPath === '') {
     return <WelcomePage />;
+  }
+
+  // Campus Gallery route (accessible to all roles)
+  if (currentPath.endsWith('/gallery') || currentPath === '/gallery') {
+    return (
+      <DashboardShell>
+        <EventGallery />
+      </DashboardShell>
+    );
   }
 
   // Participant role routes

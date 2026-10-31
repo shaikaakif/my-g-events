@@ -281,27 +281,27 @@ export const CoordinatorDashboard: React.FC = () => {
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
                 <ShieldAlert className="w-3 h-3" />
-                <span>Executive Escalation Channel</span>
+                <span>Administration Support</span>
               </div>
               <h3 className="font-serif-heading font-bold text-xl text-white mt-1.5">
-                Request Resources or Escalation from Principal
+                Request Help from Principal & Administration
               </h3>
               <p className="text-xs text-stone-300">
-                Direct administrative requests sent straight to Dr. Eleanor Sterling (Event Administrator)
+                Direct requests sent to Dr. Eleanor Sterling (Event Administrator)
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
             <button
-              onClick={() => handleOpenPresetTicket('Additional Volunteers', 'Request Additional Volunteers for Desk & Lab Coverage')}
+              onClick={() => handleOpenPresetTicket('Need Urgent Help', 'Request Additional Volunteers for Desk Coverage')}
               className="p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-left transition-all group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
                 <UserPlus className="w-4 h-4" />
               </div>
               <div className="text-xs font-bold text-white group-hover:text-emerald-200">
-                + Volunteer Allocation
+                Need Urgent Help
               </div>
               <div className="text-[11px] text-stone-300 mt-1 leading-snug">
                 Request more student volunteers for helpdesks or mentor guides.
@@ -309,14 +309,14 @@ export const CoordinatorDashboard: React.FC = () => {
             </button>
 
             <button
-              onClick={() => handleOpenPresetTicket('Resources / Materials', 'Urgent Materials & Hardware Requisition')}
+              onClick={() => handleOpenPresetTicket('Supplies & Materials', 'Hardware Kits & Materials Request')}
               className="p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-left transition-all group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
                 <Package className="w-4 h-4" />
               </div>
               <div className="text-xs font-bold text-white group-hover:text-cyan-200">
-                Requisition Materials
+                Supplies & Materials
               </div>
               <div className="text-[11px] text-stone-300 mt-1 leading-snug">
                 Request badges, IoT dev kits, catering extensions, or cables.
@@ -324,14 +324,14 @@ export const CoordinatorDashboard: React.FC = () => {
             </button>
 
             <button
-              onClick={() => handleOpenPresetTicket('Venue / Schedule Issue', 'Urgent Venue / Schedule Adjustment Request')}
+              onClick={() => handleOpenPresetTicket('Venue & Access', 'Auditorium & Lab Access Extension')}
               className="p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-left transition-all group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
                 <AlertTriangle className="w-4 h-4" />
               </div>
               <div className="text-xs font-bold text-white group-hover:text-amber-200">
-                Venue & Schedule
+                Venue & Access
               </div>
               <div className="text-[11px] text-stone-300 mt-1 leading-snug">
                 Request extended auditorium hours or room switches.
@@ -831,16 +831,16 @@ export const CoordinatorDashboard: React.FC = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => handleOpenPresetTicket('Additional Volunteers', 'Request Additional Volunteers for Desk & Lab Coverage')}
+              onClick={() => handleOpenPresetTicket('Need Urgent Help', 'Request Additional Volunteers for Desk Coverage')}
               className="px-3 py-1.5 bg-white text-stone-800 text-xs font-bold rounded-xl border border-amber-300 hover:bg-amber-100/60 transition-colors cursor-pointer"
             >
               + Extra Volunteers
             </button>
             <button
-              onClick={() => handleOpenPresetTicket('Resources / Materials', 'Urgent Materials & Hardware Requisition')}
+              onClick={() => handleOpenPresetTicket('Supplies & Materials', 'Hardware Kits & Materials Request')}
               className="px-3 py-1.5 bg-white text-stone-800 text-xs font-bold rounded-xl border border-amber-300 hover:bg-amber-100/60 transition-colors cursor-pointer"
             >
-              + Equipment Requisition
+              + Equipment Request
             </button>
           </div>
         </div>
@@ -852,8 +852,8 @@ export const CoordinatorDashboard: React.FC = () => {
             setTicketPreset(null);
             setIsCreateTicketOpen(true);
           }}
-          title="Event Coordinator Ticket Command"
-          description="Assign tickets to volunteers or staff, provide resolutions, and ensure SLAs."
+          title="Coordinator Support Tickets"
+          description="Assign tickets to volunteers, review inquiries, and resolve campus requests."
         />
 
         <CreateTicketModal

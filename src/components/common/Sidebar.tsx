@@ -14,6 +14,7 @@ import {
   BarChart3,
   ShieldAlert,
   Sparkles,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -36,6 +37,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     participant: [
       { label: 'Overview', path: '/participant', icon: LayoutDashboard },
       { label: 'Explore Events', path: '/participant/events', icon: Compass },
+      { label: 'Campus Gallery', path: '/participant/gallery', icon: ImageIcon },
       { label: 'My Registrations', path: '/participant/registrations', icon: FileCheck2 },
       { label: 'Event Schedule', path: '/participant/schedule', icon: Clock },
       { label: 'Support Tickets', path: '/participant/tickets', icon: Ticket },
@@ -44,6 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     volunteer: [
       { label: 'Overview', path: '/volunteer', icon: LayoutDashboard },
       { label: 'Assigned Events', path: '/volunteer/events', icon: Calendar },
+      { label: 'Campus Gallery', path: '/volunteer/gallery', icon: ImageIcon },
       { label: 'Event Schedule', path: '/volunteer/schedule', icon: Clock },
       { label: 'Support Tickets', path: '/volunteer/tickets', icon: Ticket },
       { label: 'My Profile', path: '/volunteer/profile', icon: User },
@@ -51,6 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     coordinator: [
       { label: 'Overview', path: '/coordinator', icon: LayoutDashboard },
       { label: 'My Events', path: '/coordinator/events', icon: Calendar },
+      { label: 'Campus Gallery', path: '/coordinator/gallery', icon: ImageIcon },
       { label: 'Registrations', path: '/coordinator/registrations', icon: Users },
       { label: 'Schedule Management', path: '/coordinator/schedule', icon: Clock },
       { label: 'Challenge Brief', path: '/coordinator/challenge', icon: Trophy },
@@ -60,6 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     principal: [
       { label: 'Overview', path: '/principal', icon: LayoutDashboard },
       { label: 'Events Registry', path: '/principal/events', icon: Calendar },
+      { label: 'Campus Gallery', path: '/principal/gallery', icon: ImageIcon },
       { label: 'Campus Members', path: '/principal/members', icon: Users },
       { label: 'Registrations', path: '/principal/registrations', icon: FileCheck2 },
       { label: 'Master Schedule', path: '/principal/schedule', icon: Clock },

@@ -6,6 +6,7 @@ import { ScheduleTimeline } from '../schedule/ScheduleTimeline';
 import { ProfileView } from '../profile/ProfileView';
 import { EmptyState } from '../../components/common/EmptyState';
 import { CreateTicketModal } from '../tickets/CreateTicketModal';
+import { EventDetailModal } from '../events/EventDetailModal';
 import {
   Calendar,
   Clock,
@@ -19,6 +20,7 @@ import {
   ShieldAlert,
   AlertTriangle,
   Send,
+  Star,
 } from 'lucide-react';
 
 export const VolunteerDashboard: React.FC = () => {
@@ -29,6 +31,7 @@ export const VolunteerDashboard: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedScheduleEventId, setSelectedScheduleEventId] = useState<string>('');
   const [isRequestHelpOpen, setIsRequestHelpOpen] = useState(false);
+  const [selectedEventForDetail, setSelectedEventForDetail] = useState<EventItem | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -270,6 +273,8 @@ export const VolunteerDashboard: React.FC = () => {
           isOpen={isRequestHelpOpen}
           onClose={() => setIsRequestHelpOpen(false)}
           events={events}
+          defaultCategory="Need Urgent Help"
+          defaultSubject="Volunteer requesting urgent assistance from Coordinator"
           onTicketCreated={loadData}
         />
       </div>
@@ -326,7 +331,14 @@ export const VolunteerDashboard: React.FC = () => {
                 <span>Status: {event.status}</span>
               </div>
 
-              <div className="pt-2 border-t border-stone-100 flex justify-end">
+              <div className="pt-2 border-t border-stone-100 flex items-center justify-end gap-2">
+                <button
+                  onClick={() => setSelectedEventForDetail(event)}
+                  className="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold rounded-xl transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                  <span>Ratings & Feedback</span>
+                </button>
                 <button
                   onClick={() => {
                     setSelectedScheduleEventId(event.id);
@@ -341,6 +353,14 @@ export const VolunteerDashboard: React.FC = () => {
             </div>
           ))}
         </div>
+
+        <EventDetailModal
+          event={selectedEventForDetail}
+          isOpen={Boolean(selectedEventForDetail)}
+          initialTab="feedback"
+          onClose={() => setSelectedEventForDetail(null)}
+          onRegisterSuccess={loadData}
+        />
       </div>
     );
   }

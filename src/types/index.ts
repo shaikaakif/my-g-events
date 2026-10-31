@@ -30,6 +30,8 @@ export interface EventItem {
   updated_at: string;
   // Computed / joined helpers
   registered_count?: number;
+  average_rating?: number;
+  feedback_count?: number;
 }
 
 export type RegistrationStatus = 'confirmed' | 'waitlisted' | 'cancelled';
@@ -62,6 +64,13 @@ export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketStatus = 'open' | 'acknowledged' | 'in_progress' | 'escalated' | 'resolved' | 'closed';
 
 export type TicketCategory =
+  | 'Need Urgent Help'
+  | 'Technical Issue'
+  | 'Schedule Query'
+  | 'Venue & Access'
+  | 'Supplies & Materials'
+  | 'General Question'
+  // Support legacy/custom categories gracefully
   | 'Participant Help'
   | 'Volunteer Support'
   | 'Additional Volunteers'
@@ -116,6 +125,28 @@ export interface ChallengeContent {
   rules: string[];
   resources: ChallengeResource[];
   updated_at: string;
+}
+
+export interface EventGalleryItem {
+  id: string;
+  event_id?: string;
+  event_title?: string;
+  image_url: string;
+  caption: string;
+  uploaded_by_name: string;
+  uploaded_by_role?: string;
+  created_at: string;
+}
+
+export interface EventFeedback {
+  id: string;
+  event_id: string;
+  user_id: string;
+  user_name: string;
+  user_role?: string;
+  rating: number; // 1 to 5
+  comment: string;
+  created_at: string;
 }
 
 export type DataMode = 'demo' | 'supabase';

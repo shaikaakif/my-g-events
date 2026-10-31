@@ -22,6 +22,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Search,
+  Star,
+  MessageSquare,
 } from 'lucide-react';
 
 export const ParticipantDashboard: React.FC = () => {
@@ -32,11 +34,22 @@ export const ParticipantDashboard: React.FC = () => {
   const [schedules, setSchedules] = useState<EventScheduleItem[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedEventForDetail, setSelectedEventForDetail] = useState<EventItem | null>(null);
+  const [detailModalInitialTab, setDetailModalInitialTab] = useState<'overview' | 'challenge' | 'feedback'>('overview');
   const [selectedScheduleEventId, setSelectedScheduleEventId] = useState<string>('');
   const [isCreateTicketOpen, setIsCreateTicketOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTicketPass, setSelectedTicketPass] = useState<EventMember | null>(null);
+
+  const handleOpenFeedback = (ev: EventItem) => {
+    setSelectedEventForDetail(ev);
+    setDetailModalInitialTab('feedback');
+  };
+
+  const handleOpenDetail = (ev: EventItem) => {
+    setSelectedEventForDetail(ev);
+    setDetailModalInitialTab('overview');
+  };
 
   const loadData = useCallback(async () => {
     if (!currentUser) return;
@@ -179,7 +192,7 @@ export const ParticipantDashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <button
             onClick={() => navigate('/participant/schedule')}
             className="p-4 rounded-2xl bg-white border border-stone-200 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all text-center space-y-1 cursor-pointer"
@@ -206,6 +219,20 @@ export const ParticipantDashboard: React.FC = () => {
           </button>
 
           <button
+            onClick={() => {
+              const target = events.find((e) => e.title.includes('Gatik')) || events[0];
+              if (target) handleOpenFeedback(target);
+            }}
+            className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100/60 border-2 border-amber-300 hover:border-amber-400 hover:shadow-md transition-all text-center space-y-1 cursor-pointer group"
+          >
+            <div className="w-9 h-9 rounded-xl bg-amber-400 text-stone-900 mx-auto flex items-center justify-center font-bold shadow-xs group-hover:scale-110 transition-transform">
+              <Star className="w-5 h-5 fill-stone-900 text-stone-900" />
+            </div>
+            <div className="text-xs font-extrabold text-amber-950">Event Feedback</div>
+            <div className="text-[10px] text-amber-800 font-bold">Rate & Review ★</div>
+          </button>
+
+          <button
             onClick={() => navigate('/participant/tickets')}
             className="p-4 rounded-2xl bg-white border border-stone-200 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all text-center space-y-1 cursor-pointer relative"
           >
@@ -225,6 +252,37 @@ export const ParticipantDashboard: React.FC = () => {
             </div>
             <div className="text-xs font-bold text-stone-900">My Profile</div>
             <div className="text-[10px] text-stone-500">Badge & Identity</div>
+          </button>
+        </div>
+
+        {/* Feedback & Review Callout Banner */}
+        <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-amber-50 via-white to-emerald-50 border-2 border-amber-300/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold shadow-sm shrink-0">
+              <Star className="w-6 h-6 fill-stone-900" />
+            </div>
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-200/80 text-amber-900">
+                Attendee Feedback & Ratings
+              </div>
+              <h3 className="font-serif-heading font-bold text-base sm:text-lg text-stone-900 mt-0.5">
+                Have you attended the Gatik Xplorer Hackathon?
+              </h3>
+              <p className="text-xs text-stone-600">
+                Rate mentors, Wi-Fi connectivity, venue checkpoints, and event schedule.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              const target = events.find((e) => e.title.includes('Gatik')) || events[0];
+              if (target) handleOpenFeedback(target);
+            }}
+            className="w-full sm:w-auto px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs sm:text-sm font-extrabold rounded-xl shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all shrink-0"
+          >
+            <Star className="w-4 h-4 fill-stone-950" />
+            <span>Leave Rating & Feedback</span>
           </button>
         </div>
 
@@ -388,8 +446,9 @@ export const ParticipantDashboard: React.FC = () => {
                   event={event}
                   isRegistered={Boolean(reg && reg.registration_status !== 'cancelled')}
                   registrationStatus={reg?.registration_status}
-                  onSelect={(ev) => setSelectedEventForDetail(ev)}
-                  onRegister={(ev) => setSelectedEventForDetail(ev)}
+                  onSelect={(ev) => handleOpenDetail(ev)}
+                  onOpenFeedback={(ev) => handleOpenFeedback(ev)}
+                  onRegister={(ev) => handleOpenDetail(ev)}
                 />
               );
             })}
@@ -400,6 +459,7 @@ export const ParticipantDashboard: React.FC = () => {
         <EventDetailModal
           event={selectedEventForDetail}
           isOpen={Boolean(selectedEventForDetail)}
+          initialTab={detailModalInitialTab}
           onClose={() => setSelectedEventForDetail(null)}
           isRegistered={Boolean(
             selectedEventForDetail && registeredEventIds.has(selectedEventForDetail.id)
@@ -488,8 +548,9 @@ export const ParticipantDashboard: React.FC = () => {
                   event={event}
                   isRegistered={isReg}
                   registrationStatus={reg?.registration_status}
-                  onSelect={(ev) => setSelectedEventForDetail(ev)}
-                  onRegister={(ev) => setSelectedEventForDetail(ev)}
+                  onSelect={(ev) => handleOpenDetail(ev)}
+                  onOpenFeedback={(ev) => handleOpenFeedback(ev)}
+                  onRegister={(ev) => handleOpenDetail(ev)}
                 />
               );
             })}
@@ -499,6 +560,7 @@ export const ParticipantDashboard: React.FC = () => {
         <EventDetailModal
           event={selectedEventForDetail}
           isOpen={Boolean(selectedEventForDetail)}
+          initialTab={detailModalInitialTab}
           onClose={() => setSelectedEventForDetail(null)}
           isRegistered={Boolean(
             selectedEventForDetail && registeredEventIds.has(selectedEventForDetail.id)
@@ -594,23 +656,35 @@ export const ParticipantDashboard: React.FC = () => {
                     <span>Pass ID: #{reg.id.substring(0, 8)}</span>
                   </div>
 
-                  <div className="pt-2 border-t border-stone-100 flex items-center justify-between gap-3">
-                    {!isCancelled && (
-                      <button
-                        onClick={() => setSelectedTicketPass(reg)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                      >
-                        <QrCode className="w-4 h-4 text-emerald-700" />
-                        <span>Admission Pass</span>
-                      </button>
-                    )}
+                  <div className="pt-2 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {!isCancelled && (
+                        <button
+                          onClick={() => setSelectedTicketPass(reg)}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          <QrCode className="w-4 h-4 text-emerald-700" />
+                          <span>Admission Pass</span>
+                        </button>
+                      )}
+
+                      {!isCancelled && (
+                        <button
+                          onClick={() => handleOpenFeedback(ev)}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                          <span>Rate & Review</span>
+                        </button>
+                      )}
+                    </div>
 
                     {!isCancelled && (
                       <button
                         onClick={() => handleCancelRegistration(reg.id)}
                         className="text-xs text-rose-600 hover:text-rose-800 font-semibold cursor-pointer"
                       >
-                        Cancel Registration
+                        Cancel
                       </button>
                     )}
                   </div>
@@ -619,6 +693,17 @@ export const ParticipantDashboard: React.FC = () => {
             })}
           </div>
         )}
+
+        <EventDetailModal
+          event={selectedEventForDetail}
+          isOpen={Boolean(selectedEventForDetail)}
+          initialTab={detailModalInitialTab}
+          onClose={() => setSelectedEventForDetail(null)}
+          isRegistered={Boolean(
+            selectedEventForDetail && registeredEventIds.has(selectedEventForDetail.id)
+          )}
+          onRegisterSuccess={loadData}
+        />
 
         {/* Digital Admission Pass Modal */}
         {selectedTicketPass && selectedTicketPass.event && (

@@ -6,6 +6,8 @@ import {
   Ticket,
   TicketUpdate,
   ChallengeContent,
+  EventGalleryItem,
+  EventFeedback,
 } from '../../types';
 import {
   IEventRepository,
@@ -19,6 +21,8 @@ import {
   INITIAL_CHALLENGES,
   INITIAL_TICKETS,
   INITIAL_TICKET_UPDATES,
+  INITIAL_GALLERY_ITEMS,
+  INITIAL_EVENT_FEEDBACKS,
 } from './seedConstants';
 
 const STORAGE_KEYS = {
@@ -29,6 +33,8 @@ const STORAGE_KEYS = {
   CHALLENGES: 'gevents_demo_challenges_v1',
   TICKETS: 'gevents_demo_tickets_v1',
   TICKET_UPDATES: 'gevents_demo_ticket_updates_v1',
+  GALLERY: 'gevents_demo_gallery_v1',
+  FEEDBACKS: 'gevents_demo_feedbacks_v1',
 };
 
 function getItem<T>(key: string, fallback: T): T {
@@ -79,6 +85,8 @@ export class LocalDemoRepository implements IEventRepository {
     setItem(STORAGE_KEYS.CHALLENGES, INITIAL_CHALLENGES);
     setItem(STORAGE_KEYS.TICKETS, INITIAL_TICKETS);
     setItem(STORAGE_KEYS.TICKET_UPDATES, INITIAL_TICKET_UPDATES);
+    setItem(STORAGE_KEYS.GALLERY, INITIAL_GALLERY_ITEMS);
+    setItem(STORAGE_KEYS.FEEDBACKS, INITIAL_EVENT_FEEDBACKS);
   }
 
   // PROFILES
@@ -113,15 +121,24 @@ export class LocalDemoRepository implements IEventRepository {
     this.ensureInitialized();
     const events = getItem<EventItem[]>(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
     const members = getItem<EventMember[]>(STORAGE_KEYS.MEMBERS, INITIAL_MEMBERS);
+    const feedbacks = getItem<EventFeedback[]>(STORAGE_KEYS.FEEDBACKS, INITIAL_EVENT_FEEDBACKS);
 
-    // Compute registered counts
+    // Compute registered counts and ratings
     return events.map((ev) => {
       const confirmedCount = members.filter(
         (m) => m.event_id === ev.id && m.registration_status === 'confirmed'
       ).length;
+      const evFeedbacks = feedbacks.filter((f) => f.event_id === ev.id);
+      const avgRating =
+        evFeedbacks.length > 0
+          ? Number((evFeedbacks.reduce((sum, f) => sum + f.rating, 0) / evFeedbacks.length).toFixed(1))
+          : 5.0;
+
       return {
         ...ev,
         registered_count: confirmedCount,
+        average_rating: avgRating,
+        feedback_count: evFeedbacks.length,
       };
     });
   }
@@ -436,5 +453,52 @@ export class LocalDemoRepository implements IEventRepository {
         };
       })
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+
+  // GALLERY
+  async getGalleryItems(eventId?: string): Promise<EventGalleryItem[]> {
+    this.ensureInitialized();
+    const items = getItem<EventGalleryItem[]>(STORAGE_KEYS.GALLERY, INITIAL_GALLERY_ITEMS);
+    if (!eventId || eventId === 'all') {
+      return [...items].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return items
+      .filter((i) => i.event_id === eventId)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+
+  async addGalleryItem(item: Omit<EventGalleryItem, 'id' | 'created_at'>): Promise<EventGalleryItem> {
+    this.ensureInitialized();
+    const items = getItem<EventGalleryItem[]>(STORAGE_KEYS.GALLERY, INITIAL_GALLERY_ITEMS);
+    const newItem: EventGalleryItem = {
+      ...item,
+      id: generateId(),
+      created_at: new Date().toISOString(),
+    };
+    items.unshift(newItem);
+    setItem(STORAGE_KEYS.GALLERY, items);
+    return newItem;
+  }
+
+  // EVENT FEEDBACKS
+  async getEventFeedbacks(eventId: string): Promise<EventFeedback[]> {
+    this.ensureInitialized();
+    const all = getItem<EventFeedback[]>(STORAGE_KEYS.FEEDBACKS, INITIAL_EVENT_FEEDBACKS);
+    return all
+      .filter((f) => f.event_id === eventId)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+
+  async addEventFeedback(feedback: Omit<EventFeedback, 'id' | 'created_at'>): Promise<EventFeedback> {
+    this.ensureInitialized();
+    const all = getItem<EventFeedback[]>(STORAGE_KEYS.FEEDBACKS, INITIAL_EVENT_FEEDBACKS);
+    const newFeedback: EventFeedback = {
+      ...feedback,
+      id: generateId(),
+      created_at: new Date().toISOString(),
+    };
+    all.unshift(newFeedback);
+    setItem(STORAGE_KEYS.FEEDBACKS, all);
+    return newFeedback;
   }
 }

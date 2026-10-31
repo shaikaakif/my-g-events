@@ -3,6 +3,7 @@ import { useApp } from '../../lib/data/AppContext';
 import { UserRole } from '../../types';
 import { DataModeModal } from './DataModeModal';
 import { PWAInstallButton } from './PWAInstallButton';
+import { GEventsLogo } from './GEventsLogo';
 import {
   Calendar,
   Sparkles,
@@ -13,7 +14,7 @@ import {
   ChevronDown,
   UserCheck,
   Shield,
-  Zap,
+  User,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -31,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   } = useApp();
 
   const [isDataModalOpen, setIsDataModalOpen] = useState(false);
-  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const roles: { role: UserRole; label: string; desc: string }[] = [
     { role: 'participant', label: 'Participant', desc: 'Browse, register & raise tickets' },
@@ -43,13 +44,13 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   return (
     <>
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-emerald-100/90 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
           {/* Logo & Mobile Menu Toggle */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {onToggleSidebar && (
               <button
                 onClick={onToggleSidebar}
-                className="hidden md:block lg:hidden p-2 text-stone-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-colors cursor-pointer"
+                className="hidden md:block lg:hidden p-2 text-stone-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-colors cursor-pointer shrink-0"
                 aria-label="Toggle navigation menu"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,174 +61,199 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
             <div
               onClick={() => navigate('/')}
-              className="flex items-center gap-2.5 cursor-pointer group select-none"
+              className="flex items-center gap-2 cursor-pointer group select-none min-w-0"
             >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white flex items-center justify-center shadow-md shadow-emerald-600/25 group-hover:scale-105 transition-transform shrink-0">
-                <Zap className="w-5 h-5 fill-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-serif-heading font-bold text-lg sm:text-xl text-stone-900 tracking-tight flex items-center gap-1.5">
-                  G-Events
-                  {dataMode === 'demo' ? (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-100 text-amber-900 border border-amber-300">
-                      Demo
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-teal-100 text-teal-900 border border-teal-300">
-                      Live
-                    </span>
-                  )}
+              <GEventsLogo size="md" showText={true} />
+              {dataMode === 'demo' ? (
+                <span className="hidden xs:inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 shrink-0">
+                  Demo
                 </span>
-                <span className="text-[11px] text-stone-500 font-medium tracking-normal -mt-0.5 hidden sm:inline">
-                  Campus Activities Platform
+              ) : (
+                <span className="hidden xs:inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-teal-100 text-teal-900 border border-teal-300 shrink-0">
+                  Live
                 </span>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* Center / Right controls */}
-          <div className="flex items-center gap-1.5 sm:gap-3">
-            {/* PWA Install Button */}
-            <PWAInstallButton variant="header" />
-
-            {/* Storage Mode Pill */}
-            <button
-              onClick={() => setIsDataModalOpen(true)}
-              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
-                dataMode === 'supabase'
-                  ? 'bg-teal-50 text-teal-800 border-teal-300 hover:bg-teal-100'
-                  : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
-              }`}
-              title="Click to view storage architecture & toggle Supabase"
-            >
-              {dataMode === 'supabase' ? (
-                <>
-                  <Database className="w-3.5 h-3.5 text-teal-600" />
-                  <span className="hidden md:inline">Mode B:</span> Supabase Live
-                </>
-              ) : (
-                <>
-                  <HardDrive className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="hidden md:inline">Mode A:</span> Demo Mode
-                </>
-              )}
-            </button>
-
-            {/* Quick Demo Reset */}
-            <button
-              onClick={() => {
-                if (window.confirm('Reset all demo events, tickets, and registrations to initial state?')) {
-                  resetDemoData();
-                }
-              }}
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-stone-600 hover:text-emerald-700 hover:bg-emerald-50 border border-stone-200 hover:border-emerald-200 transition-colors cursor-pointer"
-              title="Reset sample events, registrations and tickets"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Reset Data</span>
-            </button>
-
-            {/* Role Switcher Dropdown */}
+          {/* Right side: Only Profile Picture Avatar */}
+          <div className="flex items-center shrink-0">
             {currentUser && (
               <div className="relative">
                 <button
-                  onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-emerald-50/60 rounded-xl border border-emerald-200 text-stone-800 text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  className="relative group p-0.5 rounded-2xl transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                  title={`${currentUser.full_name} (${currentUser.role})`}
+                  aria-label="User profile and options"
                 >
-                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="capitalize">{currentUser.role}</span>
-                  <ChevronDown className="w-3 h-3 text-stone-400" />
+                  <div className="w-10 h-10 rounded-2xl overflow-hidden ring-2 ring-emerald-300/80 group-hover:ring-emerald-500 shadow-xs group-hover:shadow-md transition-all">
+                    <img
+                      src={currentUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                      alt={currentUser.full_name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  {/* Subtle active status indicator dot */}
+                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white" />
                 </button>
 
-                {isRoleDropdownOpen && (
+                {/* Unified Profile & Account Menu */}
+                {isProfileMenuOpen && (
                   <>
                     <div
                       className="fixed inset-0 z-30"
-                      onClick={() => setIsRoleDropdownOpen(false)}
+                      onClick={() => setIsProfileMenuOpen(false)}
                     />
-                    <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl border border-emerald-100 shadow-xl p-2 z-40 space-y-1 animate-in fade-in zoom-in-95">
-                      <div className="px-3 py-2 border-b border-stone-100">
-                        <div className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">
-                          Switch Demonstration Persona
-                        </div>
-                        <div className="text-xs text-stone-600 mt-0.5">
-                          Change current dashboard and permissions
+                    <div className="absolute right-0 mt-2.5 w-80 bg-white/98 backdrop-blur-xl rounded-2xl border border-emerald-100/90 shadow-2xl p-2.5 z-40 space-y-2 animate-in fade-in zoom-in-95">
+                      {/* User Persona Header */}
+                      <div className="p-3 bg-gradient-to-br from-emerald-50/90 via-white to-stone-50/80 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                        <img
+                          src={currentUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                          alt={currentUser.full_name}
+                          className="w-12 h-12 rounded-2xl object-cover ring-2 ring-emerald-300/80 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="font-bold text-stone-900 text-sm truncate">
+                            {currentUser.full_name}
+                          </div>
+                          <div className="text-[11px] text-stone-500 truncate">
+                            {currentUser.email}
+                          </div>
+                          <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            <Shield className="w-3 h-3" />
+                            <span className="capitalize">{currentUser.role}</span>
+                          </div>
                         </div>
                       </div>
 
-                      {roles.map((r) => {
-                        const isActive = currentUser.role === r.role;
-                        return (
-                          <button
-                            key={r.role}
-                            onClick={() => {
-                              switchRole(r.role);
-                              setIsRoleDropdownOpen(false);
-                            }}
-                            className={`w-full text-left p-2.5 rounded-xl text-xs flex items-start gap-2.5 transition-colors cursor-pointer ${
-                              isActive
-                                ? 'bg-emerald-50 text-emerald-950 font-semibold border border-emerald-200'
-                                : 'hover:bg-stone-50 text-stone-700'
-                            }`}
-                          >
-                            <div
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                                isActive ? 'bg-emerald-600 text-white' : 'bg-stone-100 text-stone-600'
+                      {/* Switch Role Section */}
+                      <div className="px-2 pt-1">
+                        <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+                          Switch Persona
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        {roles.map((r) => {
+                          const isActive = currentUser.role === r.role;
+                          return (
+                            <button
+                              key={r.role}
+                              onClick={() => {
+                                switchRole(r.role);
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className={`w-full text-left p-2 rounded-xl text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                                isActive
+                                  ? 'bg-emerald-50 text-emerald-950 font-semibold border border-emerald-200'
+                                  : 'hover:bg-stone-50 text-stone-700'
                               }`}
                             >
-                              <UserCheck className="w-3.5 h-3.5" />
-                            </div>
-                            <div>
-                              <div className="font-bold flex items-center gap-1.5">
-                                {r.label}
-                                {isActive && (
-                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                )}
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div
+                                  className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                                    isActive ? 'bg-emerald-600 text-white' : 'bg-stone-100 text-stone-600'
+                                  }`}
+                                >
+                                  <UserCheck className="w-3.5 h-3.5" />
+                                </div>
+                                <div className="truncate">
+                                  <div className="font-bold truncate">{r.label}</div>
+                                  <div className="text-[10px] text-stone-500 truncate leading-tight">
+                                    {r.desc}
+                                  </div>
+                                </div>
                               </div>
-                              <div className="text-[11px] text-stone-500 font-normal leading-tight mt-0.5">
-                                {r.desc}
-                              </div>
-                            </div>
-                          </button>
-                        );
-                      })}
+                              {isActive && (
+                                <span className="w-2 h-2 rounded-full bg-emerald-600 shrink-0 ml-1.5" />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* App Installation Option */}
+                      <div className="pt-1.5 border-t border-stone-100">
+                        <PWAInstallButton variant="header" />
+                      </div>
+
+                      {/* System Actions & Storage Info */}
+                      <div className="pt-1 border-t border-stone-100 flex flex-col gap-1">
+                        <button
+                          onClick={() => {
+                            setIsProfileMenuOpen(false);
+                            setIsDataModalOpen(true);
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-stone-700 hover:bg-stone-50 flex items-center justify-between transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            {dataMode === 'supabase' ? (
+                              <Database className="w-3.5 h-3.5 text-teal-600" />
+                            ) : (
+                              <HardDrive className="w-3.5 h-3.5 text-emerald-600" />
+                            )}
+                            <span>Storage Architecture</span>
+                          </div>
+                          <span
+                            className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                              dataMode === 'supabase'
+                                ? 'bg-teal-100 text-teal-800'
+                                : 'bg-emerald-100 text-emerald-800'
+                            }`}
+                          >
+                            {dataMode === 'supabase' ? 'Supabase' : 'Demo Mode A'}
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Reset all demo events, tickets, gallery photos and registrations?')) {
+                              resetDemoData();
+                              setIsProfileMenuOpen(false);
+                            }
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:text-emerald-700 hover:bg-emerald-50/60 flex items-center gap-2 transition-colors cursor-pointer"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5 text-stone-500" />
+                          <span>Reset Demo Data</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsProfileMenuOpen(false);
+                            navigate(`/${currentUser.role}/profile`);
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-stone-600 hover:bg-stone-50 flex items-center gap-2 transition-colors cursor-pointer"
+                        >
+                          <User className="w-3.5 h-3.5 text-stone-500" />
+                          <span>View Profile Page</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsProfileMenuOpen(false);
+                            logout();
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
+                        >
+                          <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}
               </div>
             )}
-
-            {/* Profile Avatar & Logout */}
-            {currentUser ? (
-              <div className="flex items-center gap-2 pl-2 border-l border-emerald-100">
-                <img
-                  src={currentUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
-                  alt={currentUser.full_name}
-                  className="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-300"
-                />
-                <button
-                  onClick={logout}
-                  className="p-2 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
-                  title="Sign out of demonstration identity"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => navigate('/')}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Select Role</span>
-              </button>
-            )}
           </div>
         </div>
       </header>
 
-      {/* Storage Mode & System Architecture Modal */}
-      <DataModeModal isOpen={isDataModalOpen} onClose={() => setIsDataModalOpen(false)} />
+      {/* Storage Architecture Modal */}
+      <DataModeModal
+        isOpen={isDataModalOpen}
+        onClose={() => setIsDataModalOpen(false)}
+      />
     </>
   );
 };

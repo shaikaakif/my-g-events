@@ -7,6 +7,8 @@ import {
   Ticket,
   TicketUpdate,
   ChallengeContent,
+  EventGalleryItem,
+  EventFeedback,
 } from '../../types';
 import { IEventRepository, TicketFilterOptions } from './types';
 
@@ -421,5 +423,84 @@ export class SupabaseRepository implements IEventRepository {
       note: u.note,
       created_at: u.created_at,
     }));
+  }
+
+  // GALLERY
+  async getGalleryItems(eventId?: string): Promise<EventGalleryItem[]> {
+    try {
+      const supabase = this.getClient();
+      let query = supabase.from('gallery_items').select('*').order('created_at', { ascending: false });
+      if (eventId && eventId !== 'all') {
+        query = query.eq('event_id', eventId);
+      }
+      const { data, error } = await query;
+      if (error) {
+        // Fallback to local demo storage
+        const { LocalDemoRepository } = await import('./localDemoRepository');
+        return new LocalDemoRepository().getGalleryItems(eventId);
+      }
+      return data as EventGalleryItem[];
+    } catch {
+      const { LocalDemoRepository } = await import('./localDemoRepository');
+      return new LocalDemoRepository().getGalleryItems(eventId);
+    }
+  }
+
+  async addGalleryItem(item: Omit<EventGalleryItem, 'id' | 'created_at'>): Promise<EventGalleryItem> {
+    try {
+      const supabase = this.getClient();
+      const { data, error } = await supabase
+        .from('gallery_items')
+        .insert([{ ...item }])
+        .select()
+        .single();
+      if (error) {
+        const { LocalDemoRepository } = await import('./localDemoRepository');
+        return new LocalDemoRepository().addGalleryItem(item);
+      }
+      return data as EventGalleryItem;
+    } catch {
+      const { LocalDemoRepository } = await import('./localDemoRepository');
+      return new LocalDemoRepository().addGalleryItem(item);
+    }
+  }
+
+  // EVENT FEEDBACKS
+  async getEventFeedbacks(eventId: string): Promise<EventFeedback[]> {
+    try {
+      const supabase = this.getClient();
+      const { data, error } = await supabase
+        .from('event_feedbacks')
+        .select('*')
+        .eq('event_id', eventId)
+        .order('created_at', { ascending: false });
+      if (error) {
+        const { LocalDemoRepository } = await import('./localDemoRepository');
+        return new LocalDemoRepository().getEventFeedbacks(eventId);
+      }
+      return data as EventFeedback[];
+    } catch {
+      const { LocalDemoRepository } = await import('./localDemoRepository');
+      return new LocalDemoRepository().getEventFeedbacks(eventId);
+    }
+  }
+
+  async addEventFeedback(feedback: Omit<EventFeedback, 'id' | 'created_at'>): Promise<EventFeedback> {
+    try {
+      const supabase = this.getClient();
+      const { data, error } = await supabase
+        .from('event_feedbacks')
+        .insert([{ ...feedback }])
+        .select()
+        .single();
+      if (error) {
+        const { LocalDemoRepository } = await import('./localDemoRepository');
+        return new LocalDemoRepository().addEventFeedback(feedback);
+      }
+      return data as EventFeedback;
+    } catch {
+      const { LocalDemoRepository } = await import('./localDemoRepository');
+      return new LocalDemoRepository().addEventFeedback(feedback);
+    }
   }
 }

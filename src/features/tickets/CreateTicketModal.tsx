@@ -94,7 +94,7 @@ export const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Create Support Ticket"
-      description="Submit a technical issue, schedule query, or venue accommodation request to the event team."
+      description="Need assistance or have a question? Submit a ticket to the campus event team."
       maxWidth="max-w-xl"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -127,14 +127,12 @@ export const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               onChange={(e) => setCategory(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 bg-white text-xs sm:text-sm text-stone-800 outline-none focus:border-emerald-500"
             >
-              <option value="Participant Help">Participant Help (Setup & Tools)</option>
-              <option value="Volunteer Support">Volunteer Support</option>
-              <option value="Additional Volunteers">Additional Volunteers Needed</option>
-              <option value="Resources / Materials">Resources / Materials / Hardware</option>
-              <option value="Venue / Schedule Issue">Venue / Schedule Issue</option>
-              <option value="Technical">Technical (Wi-Fi, Cluster, Power)</option>
-              <option value="Registration">Registration & Badge</option>
-              <option value="Other">Other Inquiry</option>
+              <option value="Need Urgent Help">Need Urgent Help</option>
+              <option value="Technical Issue">Technical Issue</option>
+              <option value="Schedule Query">Schedule Query</option>
+              <option value="Venue & Access">Venue & Access</option>
+              <option value="Supplies & Materials">Supplies & Materials</option>
+              <option value="General Question">General Question</option>
             </select>
           </div>
 

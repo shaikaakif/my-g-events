@@ -25,8 +25,8 @@ export const TicketList: React.FC<TicketListProps> = ({
   tickets,
   onRefresh,
   onCreateTicket,
-  title = 'Support & Inquiries',
-  description = 'Track live participant questions, catering needs, and technical alerts.',
+  title = 'Support Tickets',
+  description = 'Helpdesk requests, urgent assistance, and participant questions.',
 }) => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -117,12 +117,12 @@ export const TicketList: React.FC<TicketListProps> = ({
               className="px-3 py-2 rounded-xl border border-stone-200 bg-white text-xs text-stone-700 outline-none focus:border-emerald-500"
             >
               <option value="all">All Categories</option>
-              <option value="Technical">Technical</option>
-              <option value="Registration">Registration</option>
-              <option value="Schedule">Schedule</option>
-              <option value="Venue">Venue</option>
-              <option value="Logistics">Logistics</option>
-              <option value="General">General</option>
+              <option value="Need Urgent Help">Need Urgent Help</option>
+              <option value="Technical Issue">Technical Issue</option>
+              <option value="Schedule Query">Schedule Query</option>
+              <option value="Venue & Access">Venue & Access</option>
+              <option value="Supplies & Materials">Supplies & Materials</option>
+              <option value="General Question">General Question</option>
             </select>
           </div>
         </div>

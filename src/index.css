@@ -77,12 +77,88 @@
   50% { transform: translateY(-12px) scale(1.04); }
 }
 
-.animate-aurora-slow {
-  animation: floatSlow 8s ease-in-out infinite;
+@keyframes auroraBreathe {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.18) translate(18px, -14px);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.45;
+  }
+}
+
+@keyframes auroraBreatheReverse {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.14) translate(-20px, 16px);
+    opacity: 0.65;
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.35;
+  }
+}
+
+@keyframes meshFloat1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(40px, -30px) scale(1.12) rotate(4deg);
+  }
+  66% {
+    transform: translate(-30px, 35px) scale(0.96) rotate(-3deg);
+  }
+}
+
+@keyframes meshFloat2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(-45px, 30px) scale(1.15) rotate(-5deg);
+  }
+  66% {
+    transform: translate(35px, -25px) scale(0.92) rotate(3deg);
+  }
+}
+
+@keyframes meshFloat3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(25px, 40px) scale(1.2);
+  }
+}
+
+.animate-aurora-mesh-pistachio {
+  animation: meshFloat1 14s ease-in-out infinite;
+}
+
+.animate-aurora-mesh-pink {
+  animation: meshFloat2 16s ease-in-out infinite;
+}
+
+.animate-aurora-mesh-cyan {
+  animation: meshFloat3 12s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-aurora-slow {
+  .animate-aurora-slow,
+  .animate-aurora-breathe,
+  .animate-aurora-breathe-reverse,
+  .animate-aurora-mesh-pistachio,
+  .animate-aurora-mesh-pink,
+  .animate-aurora-mesh-cyan {
     animation: none;
   }
 }
