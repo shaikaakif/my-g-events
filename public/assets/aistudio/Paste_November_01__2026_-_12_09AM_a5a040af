@@ -1,0 +1,1225 @@
+# G-EVENTS — DEFINITIVE SCREEN-BY-SCREEN APPLICATION SPECIFICATION
+
+You are building G-Events, a complete campus event management platform.
+
+Your previous attempts at interpreting the project may have resulted in disconnected screens, unclear navigation, incomplete workflows, and dashboards that do not reflect the correct user roles.
+
+This document defines EXACTLY what each screen must contain, how each screen connects to the next, what each role can do, and where all information comes from.
+
+Do not invent your own product structure.
+
+Follow this specification.
+
+# PART 1 — UNDERSTAND THE PRODUCT
+
+G-Events is a centralized campus event management system.
+
+It has four user roles:
+
+1. Participant
+2. Volunteer
+3. Activity Coordinator
+4. Principal / Event Administrator
+
+All four roles use the same application and the same underlying database.
+
+They see different dashboards because their responsibilities and permissions are different.
+
+The application must have:
+
+- One consistent design system.
+- One consistent navigation system.
+- One central Supabase database.
+- Role-based access control.
+- Shared event, member, registration, schedule and ticket records.
+- Connected workflows between all four roles.
+
+IMPORTANT:
+
+Do not build four unrelated applications.
+
+Build one connected platform with four role-specific experiences.
+
+# PART 2 — DATA AND AUTHENTICATION RULES
+
+This is one of the most important requirements.
+
+## 2.1 Real authentication
+
+The primary sign-in system must use Supabase Authentication.
+
+The sign-in page must contain:
+
+- Email address.
+- Password.
+- Show/hide password.
+- Remember me, if supported by the chosen session implementation.
+- Sign in button.
+- Forgot password link.
+- Clear validation errors.
+- Loading state.
+- Authentication failure message.
+
+After successful authentication:
+
+1. Retrieve the authenticated user.
+2. Fetch their profile from the profiles table.
+3. Read their assigned role from the trusted profile record.
+4. Redirect them to the correct dashboard.
+5. Enforce authorization again on protected server operations.
+
+Do not trust a role supplied by a URL, localStorage, or editable frontend state.
+
+## 2.2 Quick demo access
+
+The sign-in page must ALSO provide a clearly separated section:
+
+"Quick Demo Access"
+
+It contains four buttons:
+
+- Enter as Participant
+- Enter as Volunteer
+- Enter as Activity Coordinator
+- Enter as Principal
+
+These buttons are shortcuts for the presentation.
+
+In Supabase mode, each shortcut must authenticate using an appropriately provisioned demo account, or use a secure server-controlled demo-session mechanism.
+
+Do not create a fake authenticated Supabase session in the browser.
+
+Provide setup instructions for provisioning demo users and their profile records.
+
+In local demo mode only, quick demo access may use a local demonstration identity.
+
+Clearly display "DEMO MODE" whenever local demo access is active.
+
+Demo shortcuts are not a replacement for normal email/password authentication.
+
+## 2.3 Actual application data
+
+The following information must be stored in and retrieved from Supabase:
+
+- User profiles.
+- Events.
+- Event assignments.
+- Registrations.
+- Schedules.
+- Support tickets.
+- Ticket updates.
+- Challenge statements.
+- Announcements, if implemented.
+
+Every successful create, update, or delete operation must use the active data repository.
+
+Refresh the page and verify that saved data is still present.
+
+Do not use hardcoded arrays as the application's production data source.
+
+## 2.4 Local development
+
+The application must run at:
+
+http://localhost:3000
+
+When Supabase environment variables are configured, use Supabase.
+
+If no Supabase configuration exists, provide an explicitly labelled local demo mode with persistent browser storage.
+
+Do not silently switch to local storage when a real Supabase operation fails.
+
+Never claim that local demo data was saved to Supabase.
+
+# PART 3 — GLOBAL APPLICATION STRUCTURE
+
+The application has three main interface areas.
+
+### A. Public authentication area
+
+- Welcome / sign-in page.
+- Forgot password page.
+- Authentication error states.
+
+### B. Authenticated application area
+
+- Role-specific dashboard.
+- Sidebar navigation on desktop.
+- Mobile navigation drawer or bottom navigation.
+- Top header.
+- Notification area.
+- Profile menu.
+- Logout.
+
+### C. Shared application elements
+
+All dashboards must share:
+
+- Header.
+- Sidebar.
+- Breadcrumbs where appropriate.
+- Page title.
+- Page description.
+- Consistent cards.
+- Consistent tables.
+- Consistent forms.
+- Consistent modals.
+- Consistent empty states.
+- Consistent loading and error states.
+
+Never change the complete visual language between roles.
+
+# PART 4 — EXACT SCREEN SPECIFICATIONS
+
+# SCREEN 1 — WELCOME / SIGN-IN
+
+Route: `/`
+
+Purpose: Authenticate users and provide quick presentation access.
+
+Layout:
+
+LEFT / MAIN AREA:
+
+- G-Events logo.
+- Heading: "Every Campus Event, Connected."
+- Short product description.
+- Subtle emerald and pastel aurora background.
+- Optional small visual showing the event platform.
+
+RIGHT / FORM AREA:
+
+- Sign-in heading.
+- Email field.
+- Password field.
+- Show/hide password control.
+- Forgot password.
+- Sign in button.
+
+Below the sign-in form:
+
+A separate Quick Demo Access section containing four role buttons.
+
+The demo section must be visually distinct from normal authentication.
+
+Expected workflow:
+
+Email/password → Supabase authentication → fetch profile → determine role → correct dashboard.
+
+Demo button → appropriate demo authentication mechanism → correct role dashboard.
+
+Do not send all users to the same dashboard.
+
+# SCREEN 2 — PARTICIPANT DASHBOARD
+
+Route: `/participant`
+
+Purpose: Give participants an overview of campus events and their own activity.
+
+HEADER:
+
+- Greeting using the participant's profile name.
+- Current date.
+- Notification icon.
+- Profile menu.
+
+SIDEBAR:
+
+- Overview
+- Explore Events
+- My Registrations
+- My Schedule
+- Support Tickets
+- My Profile
+
+MAIN CONTENT:
+
+SECTION 1 — Welcome
+
+A personalized heading such as:
+
+"Welcome back, [Name]"
+
+Supporting text:
+
+"Discover events, manage your registrations and stay updated."
+
+SECTION 2 — SUMMARY CARDS
+
+Show:
+
+- Available Events.
+- My Registrations.
+- Upcoming Events.
+- Open Support Tickets.
+
+All values must come from the database.
+
+SECTION 3 — UPCOMING EVENTS
+
+Show event cards with:
+
+- Event image.
+- Event title.
+- Category.
+- Date.
+- Time.
+- Venue.
+- Registration status.
+- View Details button.
+
+SECTION 4 — MY UPCOMING ACTIVITIES
+
+Show the participant's next registered events with dates and schedule information.
+
+SECTION 5 — RECENT ACTIVITY
+
+Show registration confirmations and relevant ticket updates.
+
+Actions:
+
+- Explore events.
+- Open registration.
+- View schedule.
+- Create support ticket.
+
+# SCREEN 3 — EXPLORE EVENTS
+
+Route: `/participant/events`
+
+Purpose: Discover and register for campus events.
+
+HEADER:
+
+- Page title: Explore Events.
+- Search input.
+- Category filter.
+- Event status filter.
+
+MAIN:
+
+Display event cards in a responsive grid.
+
+Each event card must show:
+
+- Cover image.
+- Title.
+- Category.
+- Short description.
+- Start date.
+- Venue.
+- Registration deadline.
+- Available capacity, if appropriate.
+- Status badge.
+- View Details button.
+
+Filters must work against real event data.
+
+Only published and registration-eligible events should offer registration.
+
+# SCREEN 4 — EVENT DETAILS
+
+Route: `/participant/events/[eventId]`
+
+This page must show:
+
+- Event cover image.
+- Event title.
+- Full description.
+- Category.
+- Date and time.
+- Venue.
+- Organizer.
+- Registration deadline.
+- Capacity and availability.
+- Event rules.
+- Schedule preview.
+- Challenge statement, if applicable.
+
+Primary action:
+
+"Register Now"
+
+Registration workflow:
+
+1. Participant opens event details.
+2. Reviews event information.
+3. Clicks Register Now.
+4. System validates authentication.
+5. System checks registration deadline.
+6. System checks capacity.
+7. System prevents duplicate registration.
+8. System creates an event_members record.
+9. UI displays success confirmation.
+10. Participant can view registration in My Registrations.
+
+If registration is closed, full or unavailable, explain why.
+
+Do not show a false success message.
+
+# SCREEN 5 — MY REGISTRATIONS
+
+Route: `/participant/registrations`
+
+Display a table or responsive card list.
+
+Columns / information:
+
+- Event name.
+- Registration date.
+- Event date.
+- Venue.
+- Registration status.
+- View Event action.
+
+Status examples:
+
+- Confirmed.
+- Pending.
+- Waitlisted.
+- Cancelled.
+
+Only use statuses supported by the database model.
+
+When a participant opens a registration, show its associated event details.
+
+# SCREEN 6 — PARTICIPANT SCHEDULE
+
+Route: `/participant/schedule`
+
+Display the participant's schedule from their registered events.
+
+Include:
+
+- Date.
+- Time.
+- Session title.
+- Description.
+- Venue.
+- Related event.
+
+Provide a clear chronological layout.
+
+Do not show schedules belonging to events the participant is not authorized to access.
+
+# SCREEN 7 — PARTICIPANT SUPPORT TICKETS
+
+Route: `/participant/tickets`
+
+Show:
+
+- Total tickets.
+- Open tickets.
+- In-progress tickets.
+- Resolved tickets.
+
+Ticket list:
+
+- Ticket ID.
+- Subject.
+- Category.
+- Event.
+- Priority.
+- Status.
+- Created date.
+- View Details.
+
+Provide a "Create Ticket" button.
+
+Create ticket form:
+
+- Related event.
+- Subject.
+- Category.
+- Description.
+- Priority.
+
+After submission:
+
+1. Validate form.
+2. Save ticket to Supabase.
+3. Show its generated ticket ID.
+4. Display it in the ticket list.
+5. Allow the participant to open the ticket details.
+
+Ticket detail must display:
+
+- Original description.
+- Current status.
+- Assigned person, if available.
+- Created date.
+- Update history.
+- Public responses.
+
+Participants must not see internal-only notes.
+
+# SCREEN 8 — VOLUNTEER DASHBOARD
+
+Route: `/volunteer`
+
+Purpose: Coordinate assigned volunteer responsibilities.
+
+SIDEBAR:
+
+- Overview
+- Assigned Events
+- Event Schedule
+- Support Tickets
+- My Profile
+
+SUMMARY CARDS:
+
+- Assigned Events.
+- Upcoming Responsibilities.
+- Assigned Tickets.
+- Resolved Tickets.
+
+MAIN SECTIONS:
+
+1. Welcome section.
+2. Assigned event cards.
+3. Upcoming schedule.
+4. Tickets requiring attention.
+5. Recent activity.
+
+All data must be scoped to the volunteer's assignments and permissions.
+
+# SCREEN 9 — VOLUNTEER ASSIGNED EVENTS
+
+Route: `/volunteer/events`
+
+Display only assigned events.
+
+Each card:
+
+- Event name.
+- Date.
+- Venue.
+- Coordinator.
+- Assignment details.
+- View Schedule.
+
+A volunteer must not be able to modify an event's global settings unless specifically authorized.
+
+# SCREEN 10 — VOLUNTEER SCHEDULE
+
+Route: `/volunteer/schedule`
+
+Display assigned duties in chronological order.
+
+Each item:
+
+- Time.
+- Event.
+- Activity.
+- Location.
+- Responsibility.
+- Relevant coordinator.
+
+# SCREEN 11 — VOLUNTEER SUPPORT TICKETS
+
+Route: `/volunteer/tickets`
+
+Show only tickets the volunteer is permitted to access.
+
+Each ticket:
+
+- Ticket ID.
+- Subject.
+- Category.
+- Event.
+- Priority.
+- Current status.
+- Assigned person.
+
+Ticket detail:
+
+- Description.
+- Update history.
+- Authorized status transitions.
+- Response form.
+- Note form where authorized.
+
+A volunteer must not receive unrestricted administrative ticket permissions.
+
+# SCREEN 12 — ACTIVITY COORDINATOR DASHBOARD
+
+Route: `/coordinator`
+
+Purpose: Manage assigned events and their activities.
+
+SIDEBAR:
+
+- Overview
+- My Events
+- Registrations
+- Schedule Management
+- Challenge Information
+- Support Tickets
+- My Profile
+
+SUMMARY CARDS:
+
+- Assigned Events.
+- Total Registrations.
+- Upcoming Sessions.
+- Pending Tickets.
+
+MAIN SECTIONS:
+
+1. Assigned event overview.
+2. Event performance.
+3. Registration summary.
+4. Upcoming schedule.
+5. Open tickets.
+6. Recent activity.
+
+Only display records within the coordinator's authorized event scope.
+
+# SCREEN 13 — COORDINATOR MY EVENTS
+
+Route: `/coordinator/events`
+
+Display assigned events.
+
+Each event row/card:
+
+- Event title.
+- Status.
+- Date.
+- Venue.
+- Registration count.
+- Capacity.
+- View Details.
+
+Event details should provide:
+
+- Event overview.
+- Registrations.
+- Schedule.
+- Challenge information.
+- Related tickets.
+
+Coordinators may edit only the fields and events permitted by their role.
+
+# SCREEN 14 — COORDINATOR REGISTRATIONS
+
+Route: `/coordinator/registrations`
+
+Display registrations for assigned events.
+
+Columns:
+
+- Participant name.
+- Participant email, only where authorized.
+- Event.
+- Registration date.
+- Registration status.
+
+Include:
+
+- Event filter.
+- Search.
+- Status filter.
+
+Do not expose unrelated participant information.
+
+# SCREEN 15 — COORDINATOR SCHEDULE MANAGEMENT
+
+Route: `/coordinator/schedule`
+
+Show a schedule management interface.
+
+Top area:
+
+- Event selector.
+- Selected event summary.
+- Add Session button.
+
+Schedule table:
+
+- Session title.
+- Date.
+- Start time.
+- End time.
+- Venue.
+- Actions.
+
+Add/Edit Session form:
+
+- Session title.
+- Description.
+- Date.
+- Start time.
+- End time.
+- Venue.
+- Sequence number.
+
+Actions:
+
+- Create session.
+- Edit session.
+- Delete session after confirmation.
+
+Changes must persist and appear in the participant and volunteer schedule views according to access rules.
+
+Prevent invalid overlapping or impossible time ranges where required by the scheduling rules.
+
+# SCREEN 16 — COORDINATOR CHALLENGE INFORMATION
+
+Route: `/coordinator/challenge`
+
+Purpose: Publish and maintain the event challenge statement.
+
+Show:
+
+- Event selector.
+- Challenge title.
+- Problem statement.
+- Objectives.
+- Rules.
+- Resources.
+- Last updated date.
+
+Provide edit controls for authorized coordinators.
+
+When saved, the updated challenge must be visible to participants viewing the relevant event.
+
+# SCREEN 17 — PRINCIPAL / ADMIN DASHBOARD
+
+Route: `/principal`
+
+Purpose: Give the administrator a complete overview of campus events.
+
+SIDEBAR:
+
+- Overview
+- Events
+- Members
+- Registrations
+- Schedule
+- Support Tickets
+- Reports
+- My Profile
+
+HEADER:
+
+- Welcome message.
+- Notifications.
+- Profile menu.
+
+SUMMARY CARDS:
+
+- Total Events.
+- Published Events.
+- Total Registrations.
+- Total Members.
+- Open Support Tickets.
+
+MAIN SECTIONS:
+
+1. Event performance overview.
+2. Upcoming events.
+3. Recent registrations.
+4. Support ticket overview.
+5. Recent system activity.
+
+Use clear, readable data visualizations only where they add value.
+
+Do not invent statistics.
+
+All metrics must derive from database queries.
+
+# SCREEN 18 — ADMIN EVENT MANAGEMENT
+
+Route: `/principal/events`
+
+This is the central event management screen.
+
+HEADER:
+
+- Page title: Event Management.
+- Create Event button.
+
+FILTERS:
+
+- Search.
+- Status.
+- Category.
+- Date.
+
+EVENT TABLE:
+
+- Event title.
+- Category.
+- Start date.
+- Venue.
+- Registration count.
+- Capacity.
+- Status.
+- Actions.
+
+Actions:
+
+- View.
+- Edit.
+- Publish.
+- Archive.
+
+The interface must clearly distinguish:
+
+- Draft.
+- Published.
+- Completed.
+- Archived.
+
+Do not silently delete events that already have registrations.
+
+# SCREEN 19 — CREATE EVENT
+
+Route: `/principal/events/new`
+
+Use a structured form with clear sections.
+
+SECTION A — BASIC INFORMATION
+
+- Event title.
+- Description.
+- Category.
+- Cover image.
+
+SECTION B — LOCATION AND TIME
+
+- Venue.
+- Start date.
+- End date.
+- Start time.
+- End time.
+
+SECTION C — REGISTRATION
+
+- Registration deadline.
+- Capacity.
+- Registration availability.
+
+SECTION D — ASSIGNMENTS
+
+- Activity coordinator.
+- Volunteers.
+
+SECTION E — PUBLISHING
+
+- Save as Draft.
+- Publish Event.
+
+Validation:
+
+- Required fields.
+- Valid dates.
+- End date cannot precede start date.
+- Registration deadline must follow valid event rules.
+- Capacity must be positive.
+- Assignments must refer to valid members.
+
+After saving:
+
+1. Create event record.
+2. Save assignments using the appropriate relational model.
+3. Display success state.
+4. Return to event details or event list.
+5. Ensure the event appears in Explore Events when published.
+
+# SCREEN 20 — ADMIN MEMBERS
+
+Route: `/principal/members`
+
+Show:
+
+- Member name.
+- Email.
+- Role.
+- Account status.
+- Assigned events.
+- Created date.
+
+Provide search and role filters.
+
+Administrator capabilities must be limited to authorized member management operations.
+
+Do not allow a participant to elevate their own role.
+
+Do not create unrestricted role editing in the browser.
+
+# SCREEN 21 — ADMIN REGISTRATIONS
+
+Route: `/principal/registrations`
+
+Display registrations across authorized events.
+
+Summary:
+
+- Total registrations.
+- Confirmed registrations.
+- Pending registrations.
+- Cancelled registrations.
+
+Table:
+
+- Participant.
+- Event.
+- Registration date.
+- Status.
+
+Provide filters by:
+
+- Event.
+- Participant.
+- Status.
+- Date.
+
+# SCREEN 22 — ADMIN SCHEDULE
+
+Route: `/principal/schedule`
+
+Display event schedules across all events within administrative scope.
+
+Provide:
+
+- Event filter.
+- Date filter.
+- Chronological session list.
+- Venue.
+- Session time.
+- Coordinator.
+
+Administrative schedule actions must follow the same underlying schedule model.
+
+# SCREEN 23 — ADMIN SUPPORT TICKETS
+
+Route: `/principal/tickets`
+
+Display authorized tickets across the platform.
+
+Summary cards:
+
+- Total Tickets.
+- Open.
+- In Progress.
+- Resolved.
+
+Table:
+
+- Ticket ID.
+- Subject.
+- Event.
+- Submitted By.
+- Priority.
+- Assigned To.
+- Status.
+- Created Date.
+
+Ticket details:
+
+- Full description.
+- Event context.
+- Submitted-by information.
+- Assignment.
+- Status transition.
+- Resolution note.
+- Complete update history.
+
+Admin actions:
+
+- Assign ticket.
+- Update status.
+- Add response.
+- Add resolution note.
+- Review history.
+
+All updates must be saved to the database.
+
+# SCREEN 24 — ADMIN REPORTS
+
+Route: `/principal/reports`
+
+Provide:
+
+- Event count by status.
+- Registrations by event.
+- Registration trends if dates support them.
+- Ticket status distribution.
+- Participation summaries.
+
+Use actual database aggregates.
+
+Do not invent chart values.
+
+Include meaningful empty states.
+
+# SCREEN 25 — PROFILE
+
+Routes:
+
+- `/participant/profile`
+- `/volunteer/profile`
+- `/coordinator/profile`
+- `/principal/profile`
+
+All profiles share a consistent layout.
+
+Display:
+
+- Name.
+- Email.
+- Assigned role.
+- Avatar.
+- Account information.
+
+Allow safe editing of permitted profile fields.
+
+Never let users edit their own authorization role.
+
+# PART 5 — CONNECTED WORKFLOWS
+
+The most important requirement is that the four role dashboards must share the same real records.
+
+Implement and test these complete workflows.
+
+## WORKFLOW A — EVENT CREATION TO REGISTRATION
+
+1. Principal creates an event.
+2. Principal saves the event.
+3. Principal publishes it.
+4. Published event appears in Participant Explore Events.
+5. Participant opens event details.
+6. Participant registers.
+7. Registration is saved in event_members.
+8. Participant sees the registration in My Registrations.
+9. Coordinator sees the registration in their assigned event.
+10. Principal sees updated registration totals.
+
+This must use the same event and registration records throughout.
+
+## WORKFLOW B — EVENT SCHEDULE
+
+1. Coordinator opens assigned event.
+2. Coordinator creates a session.
+3. Session is saved to event_schedule.
+4. Participant sees the session in their schedule if registered.
+5. Volunteer sees the session if assigned to that event.
+6. Principal can review the session.
+
+## WORKFLOW C — CHALLENGE STATEMENT
+
+1. Coordinator opens Challenge Information.
+2. Coordinator edits the problem statement.
+3. Updated record is saved.
+4. Participant opens event details.
+5. Participant sees the updated challenge information.
+
+## WORKFLOW D — SUPPORT TICKET
+
+1. Participant creates a support ticket.
+2. Ticket is saved.
+3. Authorized volunteer or coordinator can see it according to assignment and permissions.
+4. Assigned person adds an update.
+5. Ticket status changes.
+6. ticket_updates stores the history.
+7. Participant sees the updated public status and response.
+8. Principal can review the ticket according to administrative permissions.
+
+## WORKFLOW E — ROLE AUTHENTICATION
+
+1. User signs in.
+2. Supabase validates credentials.
+3. Application retrieves profile.
+4. Role determines destination.
+5. Role-specific permissions are enforced.
+6. Logout clears the authenticated session.
+
+Do not rely only on hiding navigation links for security.
+
+# PART 6 — DATABASE MODEL
+
+Use Supabase PostgreSQL.
+
+Required core tables:
+
+- profiles
+- events
+- event_members
+- event_schedule
+- tickets
+- ticket_updates
+- challenge_content
+
+Create an additional event assignment relation if required to support multiple coordinators and volunteers per event.
+
+Use appropriate:
+
+- UUID identifiers.
+- Foreign keys.
+- Unique constraints.
+- Indexes.
+- Check constraints.
+- Timestamps.
+- RLS policies.
+
+Define the relationship between users, events, registrations, assignments, schedules and tickets.
+
+Provide migration SQL and seed SQL separately.
+
+Do not create duplicate event or registration records when updating existing records.
+
+Do not bypass RLS.
+
+# PART 7 — DESIGN AND VISUAL DIRECTION
+
+Use the approved LearnLens-inspired design language.
+
+Primary palette:
+
+- Background: #FAFBF7
+- Foreground: #141A16
+- Emerald: #10B981
+- Mint: #D1FAE5
+- Dark green: #064E3B
+- Card: #FFFFFF
+- Muted: #EDF2ED
+- Border: #A7F3A0
+
+Aurora accents:
+
+- #F6B8CF
+- #F9C7B1
+- #FDBA74
+- #E87969
+- #C4B5FD
+- #67DDE0
+- #B7DFA7
+
+Use:
+
+- Elegant serif headings.
+- Inter or Geist Sans body text.
+- Soft emerald interactions.
+- Subtle glassmorphism.
+- Clean white cards.
+- Generous spacing.
+- Restrained aurora backgrounds.
+- Consistent 24px main card radius.
+- Consistent 16px inner panel radius.
+- 12px button and input radius.
+
+The UI should feel like a polished modern SaaS product.
+
+Do not make it overly decorative.
+
+The user must be able to understand each screen immediately.
+
+Desktop, tablet and mobile must all work.
+
+# PART 8 — MANDATORY SCREEN-BY-SCREEN DESIGN PROCESS
+
+Before implementing, produce these four deliverables:
+
+DELIVERABLE 1 — SCREEN INVENTORY
+
+List every screen, its route, role, purpose and main actions.
+
+DELIVERABLE 2 — NAVIGATION MAP
+
+Show exactly which navigation items appear for each role and where each item leads.
+
+DELIVERABLE 3 — DATA MAPPING
+
+For every screen, list:
+
+- Data it reads.
+- Table it reads from.
+- Actions it performs.
+- Table it writes to.
+- Permission required.
+
+DELIVERABLE 4 — WORKFLOW MAP
+
+Show how actions performed by one role become visible to other authorized roles.
+
+Do not start implementation until this structure is internally consistent.
+
+# PART 9 — IMPLEMENTATION RULES
+
+- Use reusable shared components.
+- Use a central typed data-access layer.
+- Separate UI from database operations.
+- Use correct TypeScript types.
+- Keep business logic out of presentational components.
+- Use proper Next.js server/client boundaries.
+- Validate forms.
+- Handle errors.
+- Handle loading states.
+- Handle empty states.
+- Avoid unnecessary useEffect.
+- Do not use any.
+- Do not suppress compiler errors.
+- Do not invent missing exports.
+- Do not duplicate components.
+- Do not create dead buttons.
+- Do not fake database success.
+- Do not replace real Supabase data with mock arrays.
+
+# PART 10 — FINAL VERIFICATION
+
+Test these exact journeys:
+
+TEST 1:
+Principal signs in → creates event → publishes event.
+
+TEST 2:
+Participant signs in → explores event → registers → sees registration.
+
+TEST 3:
+Coordinator signs in → sees registration → creates schedule session.
+
+TEST 4:
+Participant sees updated schedule.
+
+TEST 5:
+Participant creates support ticket.
+
+TEST 6:
+Authorized volunteer updates ticket.
+
+TEST 7:
+Participant sees ticket update.
+
+TEST 8:
+Principal reviews event, registration and ticket information.
+
+Test both local demo mode and configured Supabase mode.
+
+Run:
+
+- npx tsc --noEmit
+- npm run lint
+- npm run build
+
+Fix actual root causes. Never report a successful test unless it actually passed.
+
+# FINAL INSTRUCTION
+
+You must understand the complete product before building it.
+
+Do not treat the role dashboards as separate products.
+
+Do not invent screen contents.
+
+Do not skip screens.
+
+Do not make decorative buttons that do nothing.
+
+Do not use sample data as the real production database.
+
+The result must be a connected, understandable, reliable campus event management system.
+
+Start by presenting the four architecture deliverables. Then implement the application in controlled phases.

@@ -1,0 +1,6 @@
+{
+  "name": "G-Events — Campus Event Management Platform",
+  "description": "A centralized campus event management platform for students, volunteers, activity coordinators, and administrators with role-based dashboards, ticketing, and live schedules.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
